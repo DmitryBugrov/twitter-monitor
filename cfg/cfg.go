@@ -21,8 +21,8 @@ type Cfg struct {
 		AccessToken    string
 		AccessSecret   string
 
-		Username string //twitter user
-		Message  string //reply message
+		Usernames []string //twitter user
+		Message   string   //reply message
 	}
 }
 

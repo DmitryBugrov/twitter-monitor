@@ -34,7 +34,9 @@ func main() {
 	if !err {
 		os.Exit(1)
 	}
-	Monitor()
+	if Monitor() {
+		Log.Print(log.LogLevelError, "Exit with errors")
+	}
 
 	Log.Print(log.LogLevelTrace, "Exit")
 }
@@ -59,22 +61,20 @@ func Init() bool {
 	return true
 }
 
-func Monitor() {
+func Monitor() bool {
 	Log.Print(log.LogLevelTrace, "Enter to Monitor")
 
 	Log.Print(log.LogLevelTrace, "Add to following")
-	v := url.Values{}
-	_, err := client.FollowUser(config.TM.Username)
+	err := AddFollowUsers()
+	if err {
+		return err
+	}
 
-	if err != nil {
-		Log.Print(log.LogLevelError, "Error add to following:", config.TM.Username)
+	v, err := GetUsersID(config.TM.Usernames)
+	if err {
+		return err
 	}
-	v = url.Values{}
-	user, err := client.GetUsersShow(config.TM.Username, v)
-	if err != nil {
-		Log.Print(log.LogLevelError, "Error get userid for:", config.TM.Username)
-	}
-	v.Set("follow", strconv.FormatInt(user.Id, 10))
+
 	twitterStream := client.PublicStreamFilter(v)
 
 	for {
@@ -88,12 +88,15 @@ func Monitor() {
 
 		default:
 			Log.Print(log.LogLevelError, "recived unknown type")
+			return true
 		}
 
 	}
+	return false
 }
 
 func SendMessage(client *anaconda.TwitterApi, Log *log.Log, msg string, user string) {
+	Log.Print(log.LogLevelTrace, "Enter to SendMessage")
 	_, err := client.PostDMToScreenName(msg, user)
 	if err != nil {
 		Log.Print(log.LogLevelError, "Error send message:", err.Error())
@@ -101,4 +104,39 @@ func SendMessage(client *anaconda.TwitterApi, Log *log.Log, msg string, user str
 		Log.Print(log.LogLevelTrace, "Send message successfully to:", user)
 	}
 
+}
+
+func AddFollowUsers() bool {
+	Log.Print(log.LogLevelTrace, "Enter to AddFollowUsers")
+	for _, item := range config.TM.Usernames {
+		_, err := client.FollowUser(item)
+
+		if err != nil {
+			Log.Print(log.LogLevelError, "Error add to following:", item, err.Error())
+			return true
+		}
+	}
+	return false
+}
+
+func GetUsersID(usernames []string) (url.Values, bool) {
+	Log.Print(log.LogLevelTrace, "Enter to GetUsersID")
+	v := url.Values{}
+	result := ""
+	for _, item := range config.TM.Usernames {
+		user, err := client.GetUsersShow(item, v)
+		if err != nil {
+			Log.Print(log.LogLevelError, "Error get userid for:", item)
+			return v, true
+		}
+		result = result + strconv.FormatInt(user.Id, 10) + ","
+	}
+	if len(result) == 0 {
+		Log.Print(log.LogLevelError, "Error get userid")
+		return v, true
+	}
+	v.Set("follow", result[:len(result)-1])
+
+	Log.Print(log.LogLevelTrace, "UsersID:", result[:len(result)-1])
+	return v, false
 }

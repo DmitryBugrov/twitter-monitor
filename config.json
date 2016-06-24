@@ -5,7 +5,10 @@
 		"AccessToken" : "182329995-bCwddVYl4Z9GoeU0asFEyrjUuKfdEVtAhKOji5lg",
 		"AccessSecret" : "4CbxJeG7wce24ctoRW3S5jRddcILyOY9wkMMZlFYrfWpL",
 
-		"Username" : "DmitryTest1902",
+		"Usernames" : [
+			"DmitryTest1902",
+			"BreakingNews"
+			],
 		"Message"  : "Hello"          
 	}
 	

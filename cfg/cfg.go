@@ -16,6 +16,7 @@ var (
 
 type Cfg struct {
 	TM struct {
+		LogLevel       string
 		ConsumerKey    string
 		ConsumerSecret string
 		AccessToken    string

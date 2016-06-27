@@ -13,13 +13,6 @@ import (
 )
 
 const (
-	//	consumerKey    = "AerKUoivGDOTEcr7qEz3Mln0e"
-	//	consumerSecret = "dwsdF8YKrFlKd5gBcfO6nruVzQYKOLIP4lieS0tOoClewfRPVb"
-	//	accessToken    = "182329995-bCwddVYl4Z9GoeU0asFEyrjUuKfdEVtAhKOji5lg"
-	//	accessSecret   = "4CbxJeG7wce24ctoRW3S5jRddcILyOY9wkMMZlFYrfWpL"
-
-	//	username = "DmitryTest1902" //twitter user
-	//	message  = "Hello"          //reply message
 	configFileName = "./config.json"
 )
 
@@ -84,7 +77,7 @@ func Monitor() bool {
 		case anaconda.Tweet:
 			Log.Print(log.LogLevelTrace, "Receiving tweet:", tweet.Text)
 
-			go SendMessage(client, Log, config.TM.Message, item.(anaconda.Tweet).User.ScreenName)
+			go SendMessage(client, Log, config.TM.Message, tweet.InReplyToStatusID) //item.(anaconda.Tweet).User.ScreenName)
 
 		default:
 			Log.Print(log.LogLevelError, "recived unknown type")
@@ -95,13 +88,16 @@ func Monitor() bool {
 	return false
 }
 
-func SendMessage(client *anaconda.TwitterApi, Log *log.Log, msg string, user string) {
+func SendMessage(client *anaconda.TwitterApi, Log *log.Log, msg string, status int64) {
 	Log.Print(log.LogLevelTrace, "Enter to SendMessage")
-	_, err := client.PostDMToScreenName(msg, user)
+	//_, err := client.PostDMToScreenName(msg, user) //post direct message
+	v := url.Values{}
+	v.Set("in_reply_to_status_id", strconv.FormatInt(status, 10))
+	_, err := client.PostTweet(msg, v)
 	if err != nil {
 		Log.Print(log.LogLevelError, "Error send message:", err.Error())
 	} else {
-		Log.Print(log.LogLevelTrace, "Send message successfully to:", user)
+		Log.Print(log.LogLevelTrace, "Send message successfully")
 	}
 
 }

@@ -1,16 +1,16 @@
 {
 	"TM": {
 		"LogLevel" : "LogLevelTrace",
-		"ConsumerKey":"8kh20ckM5SSx6ho2RawRNgVog",
-		"ConsumerSecret" : "grCp9I3NDh7eUDRgTIgOSrQ26eH5tZ90X17BKpf0Mfnrg4v9YC",
-		"AccessToken" : "182329995-bCwddVYl4Z9GoeU0asFEyrjUuKfdEVtAhKOji5lg",
-		"AccessSecret" : "4CbxJeG7wce24ctoRW3S5jRddcILyOY9wkMMZlFYrfWpL",
+		"ConsumerKey":"--------------------",
+		"ConsumerSecret" : "--------------------",
+		"AccessToken" : "--------------------",
+		"AccessSecret" : "--------------------",
 
 		"Usernames" : [
 			"DmitryTest1902"
 			
 			],
-		"Message"  : "Hello test"          
+		"Message"  : "Hello, test message"          
 	}
 	
 }
